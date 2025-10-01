@@ -1,7 +1,7 @@
 package tobyspring.splearn.application.required;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static tobyspring.splearn.domain.MemberFixture.createMemberRegisterRequest;
 import static tobyspring.splearn.domain.MemberFixture.createPasswordEncoder;
 
@@ -43,4 +43,5 @@ class MemberRepositoryTest {
     assertThatThrownBy(() -> memberRepository.save(member2))
         .isInstanceOf(DataIntegrityViolationException.class);
   }
+
 }
