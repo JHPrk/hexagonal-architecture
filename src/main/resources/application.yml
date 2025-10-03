@@ -1,5 +1,5 @@
 spring:
   application.name: splearn
-jpa:
-  show-sql: true
+  jpa:
+    show-sql: true
 

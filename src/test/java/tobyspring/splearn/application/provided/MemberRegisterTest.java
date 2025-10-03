@@ -2,9 +2,8 @@ package tobyspring.splearn.application.provided;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static tobyspring.splearn.domain.MemberFixture.createMemberRegisterRequest;
-import static tobyspring.splearn.domain.MemberFixture.createPasswordEncoder;
 
+import jakarta.persistence.EntityManager;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,8 +20,7 @@ import tobyspring.splearn.domain.MemberStatus;
 @SpringBootTest
 @Transactional
 @Import(SplearnTestConfiguration.class)
-@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-public record MemberRegisterTest(MemberRegister memberRegister) {
+public record MemberRegisterTest(MemberRegister memberRegister, EntityManager entityManager) {
 
   @Test
   void register() {
@@ -40,6 +38,18 @@ public record MemberRegisterTest(MemberRegister memberRegister) {
         .isInstanceOf(DuplicateEmailException.class);
   }
 
+  @Test
+  void activate() {
+    Member member = memberRegister.register(MemberFixture.createMemberRegisterRequest());
+    entityManager.flush();
+    entityManager.clear();
+
+    member = memberRegister.activate(member.getId());
+
+    entityManager.flush();
+    assertThat(member.getStatus()).isEqualTo(MemberStatus.ACTIVE);
+
+  }
 
 
   @Test
